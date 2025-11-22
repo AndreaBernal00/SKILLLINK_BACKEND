@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     # SkillLink apps
-    'usuarios',
+    'usuarios.apps.UsuariosConfig',
     'perfiles',
     'servicios',
     'disponibilidad',
@@ -190,9 +190,3 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-import os
-
-if os.environ.get("RENDER"):
-    from backend.create_superusers import create_superusers
-    create_superusers()
