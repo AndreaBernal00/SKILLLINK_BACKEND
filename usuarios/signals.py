@@ -1,28 +1,26 @@
-from django.contrib.auth import get_user_model
 from django.db.models.signals import post_migrate
+from django.contrib.auth import get_user_model
 from django.dispatch import receiver
-import os
 
 User = get_user_model()
 
-SUPERUSERS = [
-    {"email": "andrea@gmail.com", "nombre": "Andrea", "password": "admin123"},
-    {"email": "jorge@gmail.com", "nombre": "Jorge", "password": "admin123"},
-    {"email": "juan@gmail.com", "nombre": "Juan", "password": "admin123"},
-]
-
 @receiver(post_migrate)
-def create_superusers(sender, **kwargs):
-    if not os.environ.get("RENDER"):
+def crear_superusuarios(sender, **kwargs):
+    if sender.name != 'usuarios':
         return
+    
+    superusers = [
+        ("andrea@gmail.com", "Andrea"),
+        ("jorge@gmail.com", "Jorge"),
+        ("juan@gmail.com", "Juan"),
+    ]
 
-    for data in SUPERUSERS:
-        if not User.objects.filter(email=data["email"]).exists():
+    for email, nombre in superusers:
+        if not User.objects.filter(email=email).exists():
+            print(f"Creando superusuario {email}...")
             User.objects.create_superuser(
-                email=data["email"],
-                nombre=data["nombre"],
-                password=data["password"]
+                email=email,
+                nombre=nombre,
+                password="123456"
             )
-            print(f"Superusuario creado: {data['email']}")
-        else:
-            print(f"Superusuario ya existe: {data['email']}")
+
